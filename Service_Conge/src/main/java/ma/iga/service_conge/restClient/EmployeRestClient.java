@@ -1,12 +1,8 @@
 package ma.iga.service_conge.restClient;
 
-import jakarta.persistence.ForeignKey;
 import ma.iga.service_conge.modelClients.Employe;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +19,9 @@ public interface EmployeRestClient {
     @GetMapping("/employes/actifs/{idEmploye}")
     List<Integer> getEmployesIdActifsByDepartement(@PathVariable int idEmploye);
 
-    @PostMapping("/employes/update-en-conge/{employeId}")
-    void updateEmployesEnConge(@PathVariable int employeId,@RequestBody boolean enConge);
+    @PutMapping("/employes/update-en-conge/{employeId}")
+    Employe updateEmployesEnConge(@PathVariable int employeId,@RequestBody boolean enConge);
+
+    @PutMapping("/employes/updateSolde/{employeId}")
+    Employe updateEmployeSoldeConge(@PathVariable int employeId, @RequestBody int newSoldeConge);
 }

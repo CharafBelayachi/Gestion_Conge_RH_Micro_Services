@@ -19,4 +19,7 @@ public interface EmployeRepository extends JpaRepository<Employe, Integer> {
     @Query("SELECT e.id FROM Employe e WHERE e.departement.id = :departementId AND e.actif = true")
     List<Integer> findByDepartementIdAndActifTrue(int departementId);
 
+    @Query("UPDATE Employe e SET e.soldeConge = 18 ")
+    void initializeSoldeConge();
+
 }

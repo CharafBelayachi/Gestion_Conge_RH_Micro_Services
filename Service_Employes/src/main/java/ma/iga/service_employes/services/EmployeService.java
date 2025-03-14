@@ -19,5 +19,7 @@ public interface EmployeService {
     List<EmployeDTO> getAllEmployeesByDepartement(int departementId);
     List<Integer> getEmployesIdActifs(int idEmploye);
 
-    void updateEmployesEnConge(int employeId, boolean enConge);
+    EmployeDTO updateEmployesEnConge(int employeId, boolean enConge);
+
+    EmployeDTO updateEmployeSoldeConge(int employeId, int newSoldeConge);
 }

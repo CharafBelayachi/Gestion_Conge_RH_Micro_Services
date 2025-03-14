@@ -23,6 +23,7 @@ public class EmployeDTO {
     private String poste;
     private Boolean enConge;
     private boolean actif;
+    private int soldeConge;
 
     private RoleEmploye roleEmploye;
 

@@ -21,5 +21,5 @@ public class Employe {
     private String poste;
     private Boolean enConge;
     private boolean actif;
-
+    private int soldeConge;
 }

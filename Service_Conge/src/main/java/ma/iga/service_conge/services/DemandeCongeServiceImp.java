@@ -2,9 +2,7 @@ package ma.iga.service_conge.services;
 
 import ma.iga.service_conge.aspects.Log;
 import ma.iga.service_conge.dto.DemandeCongeDTO;
-import ma.iga.service_conge.dto.SoldeCongeDTO;
 import ma.iga.service_conge.entities.DemandeConge;
-import ma.iga.service_conge.entities.SoldeConge;
 import ma.iga.service_conge.entities.StatutDemande;
 import ma.iga.service_conge.mappers.DemandeCongeMapper;
 import ma.iga.service_conge.modelClients.Employe;
@@ -34,8 +32,8 @@ public class DemandeCongeServiceImp implements DemandeCongeService {
     @Autowired
     private DemandeCongeMapper demandeCongeMapper;
 
-    @Autowired
-    private SoldeCongeService soldeCongeService;
+//    @Autowired
+//    private SoldeCongeService soldeCongeService;
 
     @Autowired
     private ValidationPourcentage validationPourcentage;
@@ -102,15 +100,16 @@ public class DemandeCongeServiceImp implements DemandeCongeService {
 
         demandeCongesApproved.forEach(
                 d -> {
+                    Employe employe = new Employe();
                     if (d.getDateDebut() == today){
-                        employeRestClient.updateEmployesEnConge(d.getEmployeId(), true);
+                        employe = employeRestClient.updateEmployesEnConge(d.getEmployeId(), true);
                     }
-                    if (d.getDateFin().plusDays(1) == today){
-                        employeRestClient.updateEmployesEnConge(d.getEmployeId(), false);
+                    if (d.getDateFin().plusDays(1) == today) {
+                        employe = employeRestClient.updateEmployesEnConge(d.getEmployeId(), false);
                     }
+                    d.setEmploye(employe);
                 }
         );
-
     }
 
 
@@ -125,17 +124,18 @@ public class DemandeCongeServiceImp implements DemandeCongeService {
     @Log
     @Override
     public DemandeCongeDTO validerDemandeConge(DemandeCongeDTO demandeCongeDTO) {
-
         DemandeConge demandeConge=demandeCongeMapper.toEntity(demandeCongeDTO);
-        int joursRestant = calculeJoursRestant(demandeConge.getEmployeId());
+
+        Employe employe = employeRestClient.getEmployeById(demandeConge.getEmployeId());
+        int joursRestant = employe.getSoldeConge();
 
         if(estEnAttente(demandeConge) && joursRestant >= demandeConge.calculerJoursDemande()){
             demandeConge.setStatutDemande(StatutDemande.APPROUVEE);
             repository.save(demandeConge);
 
-            // mise a jour le solde au moment de validation de ddemande
-            SoldeCongeDTO soldeCongeDTO = soldeCongeService.getSoldeCongeByEmployeeId(demandeConge.getEmployeId());
-            soldeCongeService.updateSoldeConge(soldeCongeDTO, demandeConge.calculerJoursDemande());
+            // mise a jour le solde au moment de validation de demande
+            Employe newEmploye = employeRestClient.updateEmployeSoldeConge(demandeConge.getEmployeId(), joursRestant - demandeConge.calculerJoursDemande());
+            demandeConge.setEmploye(newEmploye);
             //
         }
         return demandeCongeMapper.toDTO(demandeConge);
@@ -158,11 +158,6 @@ public class DemandeCongeServiceImp implements DemandeCongeService {
         return demandeConge.getStatutDemande()== StatutDemande.EN_ATTENTE;
     }
 
-    private int calculeJoursRestant(int idEmploye){
-        SoldeCongeDTO soldeCongeDTO = soldeCongeService.getSoldeCongeByEmployeeId(idEmploye);
-        int joursRestant = soldeCongeDTO.getSoldeInitial() - soldeCongeDTO.getSoldeCongePris();
-        return joursRestant;
-    }
 
 
 

@@ -57,9 +57,14 @@ public class EmployeController {
         return empService.getEmployesIdActifs(idEmploye);
     }
 
-    @PostMapping("/update-en-conge/{employeId}")
-    public void updateEmployesEnConge(@PathVariable int employeId,@RequestBody boolean enConge){
-        empService.updateEmployesEnConge(employeId, enConge);
+    @PutMapping("/update-en-conge/{employeId}")
+    public EmployeDTO updateEmployesEnConge(@PathVariable int employeId,@RequestBody boolean enConge){
+        return empService.updateEmployesEnConge(employeId, enConge);
+    }
+
+    @PutMapping("/employes/updateSolde/{employeId}")
+    public EmployeDTO updateEmployeSoldeConge(@PathVariable int employeId, @RequestBody int newSoldeConge){
+        return empService.updateEmployeSoldeConge(employeId, newSoldeConge);
     }
 
 

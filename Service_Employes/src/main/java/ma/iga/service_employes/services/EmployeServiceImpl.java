@@ -12,8 +12,10 @@ import ma.iga.service_employes.mappers.EmployeMapper;
 import ma.iga.service_employes.repositories.DepartementRepository;
 import ma.iga.service_employes.repositories.EmployeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +52,9 @@ public class EmployeServiceImpl implements EmployeService {
                     .orElseThrow(() -> new RuntimeException("Département non trouvé"));
 
             employe.setDepartement(departement);
+            employe.setSoldeConge(18); // initialiser solde conger par 18
+            employe.setActif(true);
+            employe.setEnConge(false);
             Employe savedEmploye = employeRepository.save(employe);
 
             if(employe.getRoleEmploye() == RoleEmploye.MANAGER){
@@ -136,10 +141,23 @@ public class EmployeServiceImpl implements EmployeService {
     }
 
     @Override
-    public void updateEmployesEnConge(int employeId, boolean enConge) {
+    public EmployeDTO updateEmployesEnConge(int employeId, boolean enConge) {
         Employe employe = employeRepository.findById(employeId).get();
         employe.setEnConge(enConge);
-        employeRepository.save(employe);
+        return employeMapper.toDto(employeRepository.save(employe));
+    }
+
+    @Override
+    public EmployeDTO updateEmployeSoldeConge(int employeId, int newSoldeConge) {
+        Employe employe = employeRepository.findById(employeId).get();
+        employe.setSoldeConge(newSoldeConge);
+        return employeMapper.toDto(employeRepository.save(employe));
+    }
+
+
+    @Scheduled(cron = "0 0 0 1 1 ?") // Exécution chaque année à minuit
+    public void initializeEmployesSoldes() {
+        employeRepository.initializeSoldeConge();
     }
 
 }
