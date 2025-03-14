@@ -1,6 +1,7 @@
 package ma.iga.service_conge.web;
 
 import ma.iga.service_conge.dto.DemandeCongeDTO;
+import ma.iga.service_conge.dto.RefusDemandeRequest;
 import ma.iga.service_conge.entities.DemandeConge;
 import ma.iga.service_conge.entities.StatutDemande;
 import ma.iga.service_conge.services.DemandeCongeService;
@@ -37,10 +38,16 @@ public class DemandeCongeController {
         return service.CreateDemandeConge(demandeCongeDTO);
     }
 
-//    @PutMapping
-//    public DemandeCongeDTO updateDemandeConge(@RequestBody DemandeCongeDTO demandeCongeDTO){
-//        return service.updateDemandeConge(demandeCongeDTO);
-//    }
+    @PutMapping("/valide")
+    public DemandeCongeDTO validerDemandeConge(@RequestBody DemandeCongeDTO demandeCongeDTO) {
+        return service.validerDemandeConge(demandeCongeDTO);
+    }
+
+    @PutMapping("/refus")
+    public DemandeCongeDTO refuseDemandeConge(@RequestBody RefusDemandeRequest refusDemandeRequest) {
+        return service.refuseDemandeConge(refusDemandeRequest.getDemandeCongeDTO(),refusDemandeRequest.getMotifRefus());
+    }
+
 
     @DeleteMapping
     public void deleteDemandeConge(@RequestParam int id) {

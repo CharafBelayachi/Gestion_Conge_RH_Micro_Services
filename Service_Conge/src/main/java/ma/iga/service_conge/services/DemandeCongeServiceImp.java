@@ -98,8 +98,6 @@ public class DemandeCongeServiceImp implements DemandeCongeService {
     @Scheduled(cron = "0 0 0 * * ?") // Exécution quotidienne à minuit
     public void updateEmployesEnConge() {
         LocalDate today = LocalDate.now();
-        LocalDate tomorrow = today.plusDays(1);
-
         List<DemandeConge> demandeCongesApproved = repository.findTopGroupByIdEmployeStatutDemandeOrderByDateCreationDesc(StatutDemande.APPROUVEE);
 
         demandeCongesApproved.forEach(
@@ -107,7 +105,7 @@ public class DemandeCongeServiceImp implements DemandeCongeService {
                     if (d.getDateDebut() == today){
                         employeRestClient.updateEmployesEnConge(d.getEmployeId(), true);
                     }
-                    if (d.getDateFin() == tomorrow){
+                    if (d.getDateFin().plusDays(1) == today){
                         employeRestClient.updateEmployesEnConge(d.getEmployeId(), false);
                     }
                 }

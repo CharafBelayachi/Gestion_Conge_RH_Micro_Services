@@ -19,11 +19,9 @@ public interface EmployeRestClient {
     @GetMapping("/employes/{id}")
     Employe getEmployeById(@PathVariable int id);
 
-//    @GetMapping("/employes/pourcentage/{id}")
-//    Double getPourcentageEmployesEnConge(@PathVariable int idDepartement);
 
     @GetMapping("/employes/actifs/{idEmploye}")
-    List<Integer> getEmployesIdActifsByDepartement(@PathVariable int idEmploye);//changer idDepartement par idEmploye
+    List<Integer> getEmployesIdActifsByDepartement(@PathVariable int idEmploye);
 
     @PostMapping("/employes/update-en-conge/{employeId}")
     void updateEmployesEnConge(@PathVariable int employeId,@RequestBody boolean enConge);
