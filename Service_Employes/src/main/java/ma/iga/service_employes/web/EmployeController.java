@@ -62,7 +62,7 @@ public class EmployeController {
         return empService.updateEmployesEnConge(employeId, enConge);
     }
 
-    @PutMapping("/employes/updateSolde/{employeId}")
+    @PutMapping("/updateSolde/{employeId}")
     public EmployeDTO updateEmployeSoldeConge(@PathVariable int employeId, @RequestBody int newSoldeConge){
         return empService.updateEmployeSoldeConge(employeId, newSoldeConge);
     }
